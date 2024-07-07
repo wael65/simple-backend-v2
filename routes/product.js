@@ -36,7 +36,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 // Route to handle pagination requests
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit);
+  const limit = parseInt(req.query.limit) || 4;
 
   // Get the search term from the query string
   const { name } = req.query;
@@ -60,7 +60,13 @@ router.get("/", async (req, res) => {
     const totalPages = Math.ceil(product.length / limit);
 
     // Send the paginated products and total pages as the API response
-    res.json({ totalPages, totalItems, product: paginatedProducts });
+    res.json({
+      totalPages,
+      totalItems,
+      page,
+      result: paginatedProducts.length,
+      product: paginatedProducts,
+    });
   } catch (err) {
     console.log(err);
   }

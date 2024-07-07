@@ -26,9 +26,13 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 // Get All Brand
 router.get("/", async (req, res) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
+  const skip = (page - 1) * limit;
+
   try {
-    let brand = await Brand.find();
-    res.json(brand);
+    let brand = await Brand.find().skip(skip).limit(limit);
+    res.json({ results: brand.length, page, data: brand });
   } catch (err) {
     console.log(err);
   }

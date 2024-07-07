@@ -27,8 +27,12 @@ router.post("/", upload.single("image"), async (req, res) => {
 // Get All Category
 router.get("/", async (req, res) => {
   try {
-    let category = await Category.find();
-    res.json(category);
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 5;
+    const skip = (page - 1) * limit;
+
+    let category = await Category.find().skip(skip).limit(limit);
+    res.json({ results: category.length, page, data: category });
   } catch (err) {
     console.log(err);
   }

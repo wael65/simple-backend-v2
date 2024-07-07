@@ -1,4 +1,4 @@
-# simple-backend
+# simple-backend V2
 
 simple backend using nodeJs, express and mongodb
 
