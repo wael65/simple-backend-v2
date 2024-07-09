@@ -26,13 +26,38 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 // Get All Category
 router.get("/", async (req, res) => {
-  try {
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 5;
-    const skip = (page - 1) * limit;
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 4;
 
-    let category = await Category.find().skip(skip).limit(limit);
-    res.json({ results: category.length, page, data: category });
+  // Get the search term from the query string
+  const { name } = req.query;
+  console.log(req.query);
+
+  // Calculate the start and end indexes for the requested page
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  // Perform the search using regular expressions for flexible matching
+  const regex = new RegExp(name, "i"); // Case-insensitive search
+
+  try {
+    let category = await Category.find({ name: { $regex: regex } });
+
+    // Slice the category array based on the indexes
+    const paginatedCategory = category.slice(startIndex, endIndex);
+
+    // Calculate the total number of pages
+    const totalItems = Math.ceil(category.length);
+    const totalPages = Math.ceil(category.length / limit);
+
+    // Send the paginated category and total pages as the API response
+    res.json({
+      totalPages,
+      totalItems,
+      page,
+      result: paginatedCategory.length,
+      category: paginatedCategory,
+    });
   } catch (err) {
     console.log(err);
   }

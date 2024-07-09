@@ -28,11 +28,36 @@ router.post("/", upload.single("image"), async (req, res) => {
 router.get("/", async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+
+  // Get the search term from the query string
+  const { name } = req.query;
+  console.log(req.query);
+
+  // Calculate the start and end indexes for the requested page
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  // Perform the search using regular expressions for flexible matching
+  const regex = new RegExp(name, "i"); // Case-insensitive search
 
   try {
-    let brand = await Brand.find().skip(skip).limit(limit);
-    res.json({ results: brand.length, page, data: brand });
+    let brand = await Brand.find({ name: { $regex: regex } });
+
+    // Slice the Brand array based on the indexes
+    const paginatedBrand = brand.slice(startIndex, endIndex);
+
+    // Calculate the total number of pages
+    const totalItems = Math.ceil(brand.length);
+    const totalPages = Math.ceil(brand.length / limit);
+
+    // Send the paginated Brand and total pages as the API response
+    res.json({
+      totalPages,
+      totalItems,
+      page,
+      result: paginatedBrand.length,
+      brand: paginatedBrand,
+    });
   } catch (err) {
     console.log(err);
   }
