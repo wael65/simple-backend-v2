@@ -63,16 +63,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-// // Get User By ID
-// router.get("/:id", async (req, res) => {
-//   try {
-//     // Find user by id
-//     let user = await User.findById(req.params.id);
-//     res.json(user);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// Get Brand By ID
+router.get("/:id", async (req, res) => {
+  try {
+    // Find Brand by id
+    let brand = await Brand.findById(req.params.id);
+    res.json(brand);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 // // Delete User By ID
 // router.delete("/:id", async (req, res) => {
