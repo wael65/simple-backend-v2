@@ -1,4 +1,5 @@
 const router = require("express").Router();
+
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
 const Product = require("../model/product");
@@ -71,6 +72,16 @@ router.get("/", async (req, res) => {
     console.log(err);
   }
 });
+
+// // Get All products - udemy
+// router.get("/all", async (req, res, next) => {
+//   const page = req.query.page * 1 || 1;
+//   const limit = req.query.limit * 1 || 5;
+//   const skip = (page - 1) * limit;
+
+//   const prod = await Product.find({}).skip(skip).limit(limit);
+//   res.status(200).json({ results: prod.length, page, data: prod });
+// });
 
 // Get product By ID
 router.get("/:id", async (req, res) => {
