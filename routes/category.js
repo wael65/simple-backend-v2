@@ -74,39 +74,43 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// // Delete User By ID
-// router.delete("/:id", async (req, res) => {
-//   try {
-//     // Find user by id
-//     let user = await User.findById(req.params.id);
-//     // // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
-//     // Delete user from db
-//     await user.deleteOne();
-//     res.json(user);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// Delete category By ID
+router.delete("/:id", async (req, res) => {
+  try {
+    // Find category by id
+    let category = await Category.findById(req.params.id);
+    // // Delete image from cloudinary
+    await cloudinary.uploader.destroy(category.cloudinary_id);
+    // Delete user from db
+    await category.deleteOne();
+    res.json(category);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
-// // Update User By ID
+// // Update Category By ID
 // router.put("/:id", upload.single("image"), async (req, res) => {
 //   try {
-//     let user = await User.findById(req.params.id);
+//     let category = await Category.findById(req.params.id);
+
 //     // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
+//     await cloudinary.uploader.destroy(category.cloudinary_id);
+
 //     // Upload image to cloudinary
 //     let result;
 //     if (req.file) {
 //       result = await cloudinary.uploader.upload(req.file.path);
 //     }
 //     const data = {
-//       name: req.body.name || user.name,
-//       avatar: result?.secure_url || user.avatar,
-//       cloudinary_id: result?.public_id || user.cloudinary_id,
+//       name: req.body.name || category.name,
+//       avatar: result?.secure_url || category.avatar,
+//       cloudinary_id: result?.public_id || category.cloudinary_id,
 //     };
-//     user = await User.findByIdAndUpdate(req.params.id, data, { new: true });
-//     res.json(user);
+//     category = await Category.findByIdAndUpdate(req.params.id, data, {
+//       new: true,
+//     });
+//     res.json(category);
 //   } catch (err) {
 //     console.log(err);
 //   }

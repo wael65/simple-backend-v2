@@ -74,39 +74,48 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// // Delete User By ID
-// router.delete("/:id", async (req, res) => {
-//   try {
-//     // Find user by id
-//     let user = await User.findById(req.params.id);
-//     // // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
-//     // Delete user from db
-//     await user.deleteOne();
-//     res.json(user);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// Delete Brand By ID
+router.delete("/:id", async (req, res) => {
+  try {
+    // Find user by id
+    let brand = await Brand.findById(req.params.id);
+    // // Delete image from cloudinary
+    await cloudinary.uploader.destroy(brand.cloudinary_id);
+    // Delete user from db
+    await brand.deleteOne();
+    res.json(brand);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
-// // Update User By ID
+// // Update Brand By ID
 // router.put("/:id", upload.single("image"), async (req, res) => {
 //   try {
-//     let user = await User.findById(req.params.id);
-//     // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
-//     // Upload image to cloudinary
-//     let result;
-//     if (req.file) {
-//       result = await cloudinary.uploader.upload(req.file.path);
+//     let brand = await Brand.findById(req.params.id);
+
+//     if ("image" !== "") {
+//       // Delete image from cloudinary
+//       await cloudinary.uploader.destroy(brand.cloudinary_id);
+//       // Upload image to cloudinary
+//       let result;
+//       if (req.file) {
+//         result = await cloudinary.uploader.upload(req.file.path);
+//       }
+//       const data = {
+//         name: req.body.name || brand.name,
+//         avatar: result?.secure_url || brand.avatar,
+//         cloudinary_id: result?.public_id || brand.cloudinary_id,
+//       };
+//       brand = await Brand.findByIdAndUpdate(req.params.id, data, { new: true });
+//       res.json(brand);
+//     } else {
+//       const data = {
+//         name: req.body.name || brand.name,
+//       };
+//       brand = await Brand.findByIdAndUpdate(req.params.id, data, { new: true });
+//       res.json(brand);
 //     }
-//     const data = {
-//       name: req.body.name || user.name,
-//       avatar: result?.secure_url || user.avatar,
-//       cloudinary_id: result?.public_id || user.cloudinary_id,
-//     };
-//     user = await User.findByIdAndUpdate(req.params.id, data, { new: true });
-//     res.json(user);
 //   } catch (err) {
 //     console.log(err);
 //   }
