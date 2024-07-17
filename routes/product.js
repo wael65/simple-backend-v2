@@ -34,6 +34,24 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 // Get All products
+router.get("/all", async (req, res) => {
+  // Get the search term from the query string
+  const { name } = req.query;
+  console.log(req.query);
+  const regex = new RegExp(name, "i"); // Case-insensitive search
+
+  try {
+    let product = await Product.find({ name: { $regex: regex } });
+    res.json({
+      result: product.length,
+      product: product,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Get All products with pagination
 // Route to handle pagination requests
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
