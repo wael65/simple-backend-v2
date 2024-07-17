@@ -90,27 +90,37 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Update Category By ID
-router.put("/:id", upload.any(), async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     let category = await Category.findById(req.params.id);
 
-    // Delete image from cloudinary
-    await cloudinary.uploader.destroy(category.cloudinary_id);
+    if ("image" !== "") {
+      // Delete image from cloudinary
+      await cloudinary.uploader.destroy(category.cloudinary_id);
 
-    // Upload image to cloudinary
-    let result;
-    if (req.file) {
-      result = await cloudinary.uploader.upload(req.file.path);
+      // Upload image to cloudinary
+      let result;
+      if (req.file) {
+        result = await cloudinary.uploader.upload(req.file.path);
+      }
+      const data = {
+        name: req.body.name || category.name,
+        avatar: result?.secure_url || category.avatar,
+        cloudinary_id: result?.public_id || category.cloudinary_id,
+      };
+      category = await Category.findByIdAndUpdate(req.params.id, data, {
+        new: true,
+      });
+      res.json(category);
+    } else {
+      const data = {
+        name: req.body.name || category.name,
+      };
+      category = await Category.findByIdAndUpdate(req.params.id, data, {
+        new: true,
+      });
+      res.json(category);
     }
-    const data = {
-      name: req.body.name || category.name,
-      avatar: result?.secure_url || category.avatar,
-      cloudinary_id: result?.public_id || category.cloudinary_id,
-    };
-    category = await Category.findByIdAndUpdate(req.params.id, data, {
-      new: true,
-    });
-    res.json(category);
   } catch (err) {
     console.log(err);
   }

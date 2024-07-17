@@ -90,24 +90,32 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Update Brand By ID
-router.put("/:id", upload.any(), async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     let brand = await Brand.findById(req.params.id);
 
-    // Delete image from cloudinary
-    await cloudinary.uploader.destroy(brand.cloudinary_id);
-    // Upload image to cloudinary
-    let result;
-    if (req.file) {
-      result = await cloudinary.uploader.upload(req.file.path);
+    if ("image" !== "") {
+      // Delete image from cloudinary
+      await cloudinary.uploader.destroy(brand.cloudinary_id);
+      // Upload image to cloudinary
+      let result;
+      if (req.file) {
+        result = await cloudinary.uploader.upload(req.file.path);
+      }
+      const data = {
+        name: req.body.name || brand.name,
+        avatar: result?.secure_url || brand.avatar,
+        cloudinary_id: result?.public_id || brand.cloudinary_id,
+      };
+      brand = await Brand.findByIdAndUpdate(req.params.id, data, { new: true });
+      res.json(brand);
+    } else {
+      const data = {
+        name: req.body.name || brand.name,
+      };
+      brand = await Brand.findByIdAndUpdate(req.params.id, data, { new: true });
+      res.json(brand);
     }
-    const data = {
-      name: req.body.name || brand.name,
-      avatar: result?.secure_url || brand.avatar,
-      cloudinary_id: result?.public_id || brand.cloudinary_id,
-    };
-    brand = await Brand.findByIdAndUpdate(req.params.id, data, { new: true });
-    res.json(brand);
   } catch (err) {
     console.log(err);
   }
