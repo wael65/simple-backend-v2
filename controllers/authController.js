@@ -105,8 +105,10 @@ const login = async (req, res) => {
     sameSite: "None", //cross-site cookie
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
   res.json({
     accessToken,
+    id: foundUser.id,
     email: foundUser.email,
     name: foundUser.name,
   });
