@@ -70,6 +70,8 @@ const login = async (req, res) => {
     return res.status(401).json({ msg: "User dose not exist" });
   }
 
+  console.log(foundUser.id);
+
   //compare input passowrd with stored password
   const match = await bcrypt.compare(password, foundUser.password);
 
@@ -100,6 +102,14 @@ const login = async (req, res) => {
 
   // store refreshToken in cookie
   res.cookie("jwt", refreshToken, {
+    httpOnly: true, //accessible only by web server
+    secure: true, //https
+    sameSite: "None", //cross-site cookie
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  // store userId in cookie
+  res.cookie("userId", foundUser.id, {
     httpOnly: true, //accessible only by web server
     secure: true, //https
     sameSite: "None", //cross-site cookie

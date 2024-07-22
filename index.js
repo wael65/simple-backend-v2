@@ -29,6 +29,8 @@ app.use("/users", require("./routes/userRoutes"));
 app.use("/brand", require("./routes/brand"));
 app.use("/category", require("./routes/category"));
 app.use("/product", require("./routes/product"));
+app.use("/wishlist", require("./routes/wishlistRoute"));
+app.use("/cart", require("./routes/cartRoute"));
 
 // app listener
 mongoose.connection.once("open", () => {
