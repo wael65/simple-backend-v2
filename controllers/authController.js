@@ -2,6 +2,15 @@ const User = require("../model/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+////////////////////////////////////////////////////////////
+//import module LocalStorage
+const { LocalStorage } = require("node-localstorage");
+
+// constructor function to create a storage directory inside our project for all our localStorage setItem.
+var localStorage = new LocalStorage("./scratch");
+
+///////////////////////////////////////////////////////
+
 const register = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -115,6 +124,8 @@ const login = async (req, res) => {
     sameSite: "None", //cross-site cookie
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
+  localStorage.setItem("userid", foundUser.id);
 
   res.json({
     accessToken,
