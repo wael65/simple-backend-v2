@@ -4,6 +4,14 @@ const User = require("../model/User");
 const Product = require("../model/product");
 const Cart = require("../model/cartModel");
 
+////////////////////////////////////////////////////////////
+//import module LocalStorage
+const { LocalStorage } = require("node-localstorage");
+
+// constructor function to create a storage directory inside our project for all our localStorage setItem.
+var localStorage = new LocalStorage("./scratch");
+
+///////////////////////////////////////////////////////
 const calcTotalCartPrice = (cart) => {
   let totalPrice = 0;
   cart.cartItems.forEach((item) => {
@@ -21,13 +29,9 @@ router.post("/", async (req, res) => {
     const product = await Product.findById(productId);
 
     ///////////////////////////////////////////////////
-    // wish
-    console.log(req.cookies);
 
-    const userId = req.cookies.userId;
-
+    let userId = localStorage.getItem("userid");
     console.log(userId);
-    console.log(req.cookies.userId);
 
     ///////////////////////////////////////////////////
     // cart
@@ -53,7 +57,6 @@ router.post("/", async (req, res) => {
         // product not exist in cart,  push product to cartItems array
         cart.cartItems.push({
           product: productId,
-          color,
           price: product.price,
         });
       }
@@ -66,14 +69,14 @@ router.post("/", async (req, res) => {
     ///////////////////////////////////////////////////
     //wish-token
     // 1) Check if token exist, if exist get
-    let token;
-    if (req.cookies.jwt) {
-      token = req.cookies.jwt;
-      console.log(token);
-    }
-    if (!token) {
-      return "You are not login, Please login to get access this route", 401;
-    }
+    // let token;
+    // if (req.cookies.jwt) {
+    //   token = req.cookies.jwt;
+    //   console.log(token);
+    // }
+    // if (!token) {
+    //   return "You are not login, Please login to get access this route", 401;
+    // }
     //////////////////////////////////////////////////////////////////////
     const user = await User.findByIdAndUpdate(
       userId,
@@ -87,6 +90,28 @@ router.post("/", async (req, res) => {
       status: "success",
       message: "Product added successfully to your cart.",
       data: user.cart,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    let userId = localStorage.getItem("userid");
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return next(
+        new ApiError(`There is no cart for this user id : ${userId}`, 404)
+      );
+    }
+
+    res.status(200).json({
+      status: "success",
+      numOfCartItems: cart.cartItems.length,
+      data: cart,
     });
   } catch (err) {
     console.log(err);
