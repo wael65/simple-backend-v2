@@ -37,6 +37,7 @@ router.post("/", async (req, res) => {
     // cart
     // 1) Get Cart for logged user
     let cart = await Cart.findOne({ user: userId });
+
     if (!cart) {
       // create cart fot logged user with product
       cart = await Cart.create({
@@ -66,30 +67,11 @@ router.post("/", async (req, res) => {
     calcTotalCartPrice(cart);
     await cart.save();
 
-    ///////////////////////////////////////////////////
-    //wish-token
-    // 1) Check if token exist, if exist get
-    // let token;
-    // if (req.cookies.jwt) {
-    //   token = req.cookies.jwt;
-    //   console.log(token);
-    // }
-    // if (!token) {
-    //   return "You are not login, Please login to get access this route", 401;
-    // }
-    //////////////////////////////////////////////////////////////////////
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        $addToSet: { cart: req.body.productId },
-      },
-      { new: true }
-    );
-
     res.status(200).json({
       status: "success",
       message: "Product added successfully to your cart.",
-      data: user.cart,
+      numOfCartItems: cart.cartItems.length,
+      data: cart,
     });
   } catch (err) {
     console.log(err);
@@ -103,9 +85,7 @@ router.get("/", async (req, res) => {
     const cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
-      return next(
-        new ApiError(`There is no cart for this user id : ${userId}`, 404)
-      );
+      return `There is no cart for this user id : ${userId}`, 404;
     }
 
     res.status(200).json({
