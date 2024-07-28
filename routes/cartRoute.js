@@ -55,6 +55,7 @@ router.post("/", async (req, res) => {
           price: product.price,
           name: product.name,
           description: product.description,
+          avatar: product.avatar,
         });
       }
     }
@@ -69,6 +70,7 @@ router.post("/", async (req, res) => {
             price: product.price,
             name: product.name,
             description: product.description,
+            avatar: product.avatar,
           },
         ],
       });
