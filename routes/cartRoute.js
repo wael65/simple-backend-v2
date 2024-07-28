@@ -38,16 +38,10 @@ router.post("/", async (req, res) => {
     // 1) Get Cart for logged user
     let cart = await Cart.findOne({ user: userId });
 
-    if (!cart) {
-      // create cart fot logged user with product
-      cart = await Cart.create({
-        user: userId,
-        cartItems: [{ product: productId, price: product.price }],
-      });
-    } else {
+    if (cart) {
       // product exist in cart, update product quantity
       const productIndex = cart.cartItems.findIndex(
-        (item) => item.product.toString() === productId
+        (p) => p.product.toString() === req.body.productId
       );
       if (productIndex > -1) {
         const cartItem = cart.cartItems[productIndex];
@@ -59,8 +53,25 @@ router.post("/", async (req, res) => {
         cart.cartItems.push({
           product: productId,
           price: product.price,
+          name: product.name,
+          description: product.description,
         });
       }
+    }
+
+    if (!cart) {
+      // create cart fot logged user with product
+      cart = await Cart.create({
+        user: userId,
+        cartItems: [
+          {
+            product: productId,
+            price: product.price,
+            name: product.name,
+            description: product.description,
+          },
+        ],
+      });
     }
 
     // Calculate total cart price
@@ -82,7 +93,21 @@ router.get("/", async (req, res) => {
   try {
     let userId = localStorage.getItem("userid");
 
-    const cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: userId })
+      .populate({
+        path: "cartItems.product",
+        select: "title imageCover ratingsAverage brand category ",
+        populate: { path: "brand_id", select: "name -_id", model: "Brand" },
+      })
+      .populate({
+        path: "cartItems.product",
+        select: "title imageCover ratingsAverage brand category",
+        populate: {
+          path: "category_id",
+          select: "name -_id",
+          model: "Category",
+        },
+      });
 
     if (!cart) {
       return `There is no cart for this user id : ${userId}`, 404;
