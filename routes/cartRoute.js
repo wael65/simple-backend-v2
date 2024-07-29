@@ -7,11 +7,11 @@ const Cart = require("../model/cartModel");
 ////////////////////////////////////////////////////////////
 //import module LocalStorage
 const { LocalStorage } = require("node-localstorage");
-
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage("./scratch");
-
 ///////////////////////////////////////////////////////
+
+// Calculate the Total Price Of Cart
 const calcTotalCartPrice = (cart) => {
   let totalPrice = 0;
   cart.cartItems.forEach((item) => {
@@ -22,18 +22,17 @@ const calcTotalCartPrice = (cart) => {
   return totalPrice;
 };
 
+// Add Product To Cart
 router.post("/", async (req, res) => {
   try {
     // cart
     const { productId } = req.body;
     const product = await Product.findById(productId);
 
-    ///////////////////////////////////////////////////
-
+    ////////  Get userId From localStorage   //////////
     let userId = localStorage.getItem("userid");
-    console.log(userId);
-
     ///////////////////////////////////////////////////
+
     // cart
     // 1) Get Cart for logged user
     let cart = await Cart.findOne({ user: userId });
@@ -91,9 +90,12 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Get the list of cart items
 router.get("/", async (req, res) => {
   try {
+    ////////  Get userId From localStorage   //////////
     let userId = localStorage.getItem("userid");
+    ///////////////////////////////////////////////////
 
     const cart = await Cart.findOne({ user: userId })
       .populate({
@@ -114,6 +116,84 @@ router.get("/", async (req, res) => {
     if (!cart) {
       return `There is no cart for this user id : ${userId}`, 404;
     }
+
+    res.status(200).json({
+      status: "success",
+      numOfCartItems: cart.cartItems.length,
+      data: cart,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Delete One cart item
+router.delete("/:itemId", async (req, res) => {
+  ////////  Get userId From localStorage   //////////
+  let userId = localStorage.getItem("userid");
+  ///////////////////////////////////////////////////
+  try {
+    const cart = await Cart.findOneAndUpdate(
+      { user: userId },
+      {
+        $pull: { cartItems: { _id: req.params.itemId } },
+      },
+      { new: true }
+    );
+
+    calcTotalCartPrice(cart);
+    await cart.save();
+
+    res.status(200).json({
+      status: "success",
+      numOfCartItems: cart.cartItems.length,
+      data: cart,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Delete all cart items
+router.delete("/", async (req, res) => {
+  ////////  Get userId From localStorage   //////////
+  let userId = localStorage.getItem("userid");
+  ///////////////////////////////////////////////////
+  try {
+    await Cart.findOneAndDelete({ user: userId });
+    res.status(204).send();
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Update Quentity of one Cart Item
+router.put("/:itemId", async (req, res) => {
+  ////////  Get userId From localStorage   //////////
+  let userId = localStorage.getItem("userid");
+  ///////////////////////////////////////////////////
+  try {
+    const { quantity } = req.body;
+
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      return `there is no cart for user ${userId}`, 404;
+    }
+
+    const itemIndex = cart.cartItems.findIndex(
+      (item) => item._id.toString() === req.params.itemId
+    );
+
+    if (itemIndex > -1) {
+      const cartItem = cart.cartItems[itemIndex];
+      cartItem.quantity = quantity;
+      cart.cartItems[itemIndex] = cartItem;
+    } else {
+      return next(`there is no item for this id :${req.params.itemId}`, 404);
+    }
+
+    calcTotalCartPrice(cart);
+    await cart.save();
 
     res.status(200).json({
       status: "success",
