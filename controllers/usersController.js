@@ -1,4 +1,12 @@
 const User = require("../model/User");
+////////////////////////////////////////////////////////////
+//import module LocalStorage
+const { LocalStorage } = require("node-localstorage");
+
+// constructor function to create a storage directory inside our project for all our localStorage setItem.
+var localStorage = new LocalStorage("./scratch");
+
+///////////////////////////////////////////////////////
 
 const getAllUsers = async (req, res) => {
   const users = await User.find().select("-password").lean();
@@ -7,6 +15,7 @@ const getAllUsers = async (req, res) => {
   }
   res.json(users);
 };
+
 module.exports = {
   getAllUsers,
 };
