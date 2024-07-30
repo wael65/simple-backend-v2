@@ -135,50 +135,6 @@ const login = async (req, res) => {
   });
 };
 
-const authAddress = async (req, res) => {
-  let token;
-  ////////  Get userId From localStorage   //////////
-  let userId = localStorage.getItem("userid");
-  ///////////////////////////////////////////////////
-  try {
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-      console.log(token);
-    }
-    if (!token) {
-      return "You are not logged in. Please login to get access", 401;
-    }
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    console.log(decoded);
-
-    // 3- Check the user exists
-    const currentUser = await User.findById(decoded.UserInfo.id);
-    if (!currentUser) {
-      console.log("The user that belong to this token does no longer exist");
-    }
-    console.log("Done");
-
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        $addToSet: { addresses: req.body },
-      },
-      { new: true }
-    );
-
-    res.status(200).json({
-      status: "success",
-      message: "Product added successfully to your wishlist.",
-      data: user.addresses,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const auth = async (req, res, next) => {
   let token;
 
@@ -205,4 +161,4 @@ const auth = async (req, res, next) => {
   next();
 };
 
-module.exports = { register, login, authAddress, auth };
+module.exports = { register, login, auth };
