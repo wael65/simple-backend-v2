@@ -14,6 +14,11 @@ router.route("/address").get(authController.auth, addressRoute.getAllAddress);
 router
   .route("/address/:addressId")
   .delete(authController.auth, addressRoute.deleteAddress);
+
+router
+  .route("/address/:addressId")
+  .get(authController.auth, addressRoute.getOneAddress);
+
 router
   .route("/address/:addressId")
   .put(authController.auth, addressRoute.updateAddress);

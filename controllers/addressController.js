@@ -75,6 +75,21 @@ const deleteAddress = async (req, res) => {
 };
 
 // Update Address
+const getOneAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const address = user.addresses.id(req.params.addressId);
+
+    return res.status(200).json({
+      status: "success",
+      data: address,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// Update Address
 const updateAddress = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -99,4 +114,10 @@ const updateAddress = async (req, res) => {
   }
 };
 
-module.exports = { addAddress, getAllAddress, deleteAddress, updateAddress };
+module.exports = {
+  addAddress,
+  getAllAddress,
+  deleteAddress,
+  getOneAddress,
+  updateAddress,
+};
