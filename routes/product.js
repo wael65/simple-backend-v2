@@ -41,7 +41,16 @@ router.get("/all", async (req, res) => {
   const regex = new RegExp(name, "i"); // Case-insensitive search
 
   try {
-    let product = await Product.find({ name: { $regex: regex } });
+    let product = await Product.find({ name: { $regex: regex } })
+      .populate({
+        path: "category_id",
+        select: "name",
+      })
+      .populate({
+        path: "brand_id",
+        select: "name",
+      });
+
     res.json({
       result: product.length,
       product: product,
@@ -69,7 +78,15 @@ router.get("/", async (req, res) => {
   const regex = new RegExp(name, "i"); // Case-insensitive search
 
   try {
-    let product = await Product.find({ name: { $regex: regex } });
+    let product = await Product.find({ name: { $regex: regex } })
+      .populate({
+        path: "category_id",
+        select: "name",
+      })
+      .populate({
+        path: "brand_id",
+        select: "name",
+      });
 
     // Slice the products array based on the indexes
     const paginatedProducts = product.slice(startIndex, endIndex);

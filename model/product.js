@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema(
     },
     brand_id: {
       type: mongoose.Schema.ObjectId,
-      ref: "brand",
+      ref: "Brand",
       required: false,
     },
   },
