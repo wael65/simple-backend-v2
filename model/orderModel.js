@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "order must belong to user"],
     },
-    cartProducts: [
+    cartItems: [
       {
         product: { type: mongoose.Schema.ObjectId, ref: "Product" },
         quantity: {

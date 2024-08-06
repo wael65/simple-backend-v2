@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const addressRoute = require("../controllers/addressController");
+const orderRoute = require("../controllers/orderController");
 
 // Register - LogIn Routes
 router.route("/register").post(authController.register);
@@ -22,5 +23,8 @@ router
 router
   .route("/address/:addressId")
   .put(authController.auth, addressRoute.updateAddress);
+
+// Orders Routes
+router.route("/order/:cartId").post(orderRoute.createCashOrder);
 
 module.exports = router;

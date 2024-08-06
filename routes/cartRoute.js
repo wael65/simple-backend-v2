@@ -114,7 +114,10 @@ router.get("/", async (req, res) => {
       });
 
     if (!cart) {
-      return `There is no cart for this user id : ${userId}`, 404;
+      res.status(404).json({
+        status: "Error ",
+        messege: `There is no cart for this user id : ${userId} , 404`,
+      });
     }
 
     res.status(200).json({

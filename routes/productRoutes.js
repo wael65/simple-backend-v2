@@ -120,42 +120,72 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// // Delete User By ID
-// router.delete("/:id", async (req, res) => {
-//   try {
-//     // Find user by id
-//     let user = await User.findById(req.params.id);
-//     // // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
-//     // Delete user from db
-//     await user.deleteOne();
-//     res.json(user);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// Delete product By ID
+router.delete("/:id", async (req, res) => {
+  try {
+    // Find user by id
+    let product = await Product.findById(req.params.id);
+    // // Delete image from cloudinary
+    await cloudinary.uploader.destroy(product.cloudinary_id);
+    // Delete user from db
+    await product.deleteOne();
+    res.json(product);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
-// // Update User By ID
-// router.put("/:id", upload.single("image"), async (req, res) => {
-//   try {
-//     let user = await User.findById(req.params.id);
-//     // Delete image from cloudinary
-//     await cloudinary.uploader.destroy(user.cloudinary_id);
-//     // Upload image to cloudinary
-//     let result;
-//     if (req.file) {
-//       result = await cloudinary.uploader.upload(req.file.path);
-//     }
-//     const data = {
-//       name: req.body.name || user.name,
-//       avatar: result?.secure_url || user.avatar,
-//       cloudinary_id: result?.public_id || user.cloudinary_id,
-//     };
-//     user = await User.findByIdAndUpdate(req.params.id, data, { new: true });
-//     res.json(user);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// Update product By ID
+router.put("/:id", upload.single("image"), async (req, res) => {
+  try {
+    let product = await Product.findById(req.params.id);
+    if ("image" !== "") {
+      // Delete image from cloudinary
+      await cloudinary.uploader.destroy(product.cloudinary_id);
+      // Upload image to cloudinary
+      let result;
+      if (req.file) {
+        result = await cloudinary.uploader.upload(req.file.path);
+      }
+      const data = {
+        name: req.body.name || product.name,
+        description: req.body.description || product.description,
+        quantity: req.body.quantity || product.quantity,
+        sold: req.body.sold || product.sold,
+        price: req.body.price || product.price,
+        priceAfterDiscount:
+          req.body.priceAfterDiscount || product.priceAfterDiscount,
+        ratingsQuantity: req.body.ratingsQuantity || product.ratingsQuantity,
+        category_id: req.body.category_id || product.category_id,
+        brand_id: req.body.brand_id || product.brand_id,
+        avatar: result?.secure_url || product.avatar,
+        cloudinary_id: result?.public_id || product.cloudinary_id,
+      };
+      product = await Product.findByIdAndUpdate(req.params.id, data, {
+        new: true,
+      });
+      res.json(product);
+    } else {
+      const data = {
+        name: req.body.name || product.name,
+        description: req.body.description || product.description,
+        quantity: req.body.quantity || product.quantity,
+        sold: req.body.sold || product.sold,
+        price: req.body.price || product.price,
+        priceAfterDiscount:
+          req.body.priceAfterDiscount || product.priceAfterDiscount,
+        ratingsQuantity: req.body.ratingsQuantity || product.ratingsQuantity,
+        category_id: req.body.category_id || product.category_id,
+        brand_id: req.body.brand_id || product.brand_id,
+      };
+      product = await Product.findByIdAndUpdate(req.params.id, data, {
+        new: true,
+      });
+      res.json(product);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = router;
