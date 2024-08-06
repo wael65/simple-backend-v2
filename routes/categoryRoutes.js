@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
-const Category = require("../model/category");
+const Category = require("../model/categoryModel");
 
 // Add a New category
 router.post("/", upload.single("image"), async (req, res) => {

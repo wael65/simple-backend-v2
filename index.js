@@ -26,9 +26,9 @@ app.use(express.json());
 // Route
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
-app.use("/brand", require("./routes/brand"));
-app.use("/category", require("./routes/category"));
-app.use("/product", require("./routes/product"));
+app.use("/brand", require("./routes/brandRoutes"));
+app.use("/category", require("./routes/categoryRoutes"));
+app.use("/product", require("./routes/productRoutes"));
 app.use("/wishlist", require("./routes/wishlistRoute"));
 app.use("/cart", require("./routes/cartRoute"));
 

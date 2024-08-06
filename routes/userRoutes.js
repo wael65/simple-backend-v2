@@ -3,7 +3,7 @@ const router = express.Router();
 // const cloudinary = require("../utils/cloudinary");
 // const upload = require("../utils/multer");
 const usersController = require("../controllers/usersController");
-const User = require("../model/User");
+const User = require("../model/userModel");
 
 // Get All Users
 router.route("/").get(usersController.getAllUsers);

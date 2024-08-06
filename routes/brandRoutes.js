@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
-const Brand = require("../model/brand");
+const Brand = require("../model/brandModel");
 
 // Add a New User
 router.post("/", upload.single("image"), async (req, res) => {

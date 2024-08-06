@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const User = require("../model/User");
+const User = require("../model/userModel");
 
 ////////////////////////////////////////////////////////////
 //import module LocalStorage
