@@ -10,10 +10,10 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    // cloudinary_id: {
-    //   type: String,
-    //   required: false,
-    // },
+    cloudinary_id: {
+      type: String,
+      required: false,
+    },
     slug: {
       type: String,
       lowercase: true,

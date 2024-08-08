@@ -27,7 +27,7 @@ const createCashOrder = async (req, res) => {
     // 1) Get logged user cart
     const cart = await Cart.findById(req.params.cartId);
     if (!cart) {
-      `There is no cart for this user :${req.user._id}`, 404;
+      `There is no cart for this user :${userId}`, 404;
     }
 
     // 2) Check if there is coupon apply
@@ -66,9 +66,40 @@ const createCashOrder = async (req, res) => {
   }
 };
 
-// get all orders
+// get all orders of user
+const getAllUserOrders = async (req, res) => {
+  ////////  Get userId From localStorage   //////////
+  let userId = localStorage.getItem("userid");
+  ///////////////////////////////////////////////////
+  try {
+    const orders = await Order.find({ user: userId });
+
+    if (!orders) {
+      `There is no Orders for this user :${userId}`, 404;
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: orders,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// get all orders - Admin
 const getAllOrders = async (req, res) => {
   try {
+    const orders = await Order.find();
+
+    if (!orders) {
+      `There is no Orders `, 404;
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: orders,
+    });
   } catch (err) {
     console.log(err);
   }
@@ -77,22 +108,83 @@ const getAllOrders = async (req, res) => {
 // get one order
 const getOneOrder = async (req, res) => {
   try {
+    const order = await Order.findOne({ order: req.params._id });
+
+    if (!order) {
+      `There is no Order with this ID :${req.params._id}`, 404;
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: order,
+    });
   } catch (err) {
     console.log(err);
   }
 };
 
-// delet one order
+// delete one order
 const deleteOrder = async (req, res) => {
   try {
+    const order = await Order.findOneAndDelete({ order: req.params._id });
+
+    if (!order) {
+      `There is no Order with this ID :${req.params._id}`, 404;
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "order removed successfully",
+      data: order,
+    });
   } catch (err) {
     console.log(err);
   }
 };
 
-// update one order
-const updateOrder = async (req, res) => {
+// update order pay
+const updateOrderPay = async (req, res) => {
   try {
+    // const order = await Order.findOne({ order: req.params._id });
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      `There is no Order with this ID :${req.params.id}`, 404;
+    }
+
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    const updateIsPaid = await order.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Update Order To Paid successfully",
+      data: updateIsPaid,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// update order delevery
+const updateOrderDelecery = async (req, res) => {
+  try {
+    // const order = await Order.findOne({ order: req.params._id });
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      `There is no Order with this ID :${req.params.id}`, 404;
+    }
+
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+    const updateIsDeleverd = await order.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Update Order To Paid successfully",
+      data: updateIsDeleverd,
+    });
   } catch (err) {
     console.log(err);
   }
@@ -100,8 +192,10 @@ const updateOrder = async (req, res) => {
 
 module.exports = {
   createCashOrder,
+  getAllUserOrders,
   getAllOrders,
   deleteOrder,
   getOneOrder,
-  updateOrder,
+  updateOrderPay,
+  updateOrderDelecery,
 };

@@ -26,5 +26,11 @@ router
 
 // Orders Routes
 router.route("/order/:cartId").post(orderRoute.createCashOrder);
+router.route("/order/").get(orderRoute.getAllUserOrders);
+router.route("/admin/order/").get(orderRoute.getAllOrders);
+router.route("/order/:orderID").get(orderRoute.getOneOrder);
+router.route("/order/:orderID").delete(orderRoute.deleteOrder);
+router.route("/order/pay/:id").put(orderRoute.updateOrderPay);
+router.route("/order/delevery/:id").put(orderRoute.updateOrderDelecery);
 
 module.exports = router;
