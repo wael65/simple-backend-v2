@@ -67,19 +67,19 @@ router.get("/", async (req, res) => {
   const limit = parseInt(req.query.limit) || 4;
 
   // // Get the search term from the query string
-  // const { name } = req.query;
-  console.log(req.query);
+  const { name } = req.query;
+  // console.log(req.query);
 
   // Calculate the start and end indexes for the requested page
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
   // // Perform the search using regular expressions for flexible matching
-  // const regex = new RegExp(name, "i"); // Case-insensitive search
+  const regex = new RegExp(name, "i"); // Case-insensitive search
 
   try {
-    // let product = await Product.find({ name: { $regex: regex } })
-    let product = await Product.find(req.query)
+    let product = await Product.find({ name: { $regex: regex } })
+      // let product = await Product.find(req.query)
       .populate({
         path: "category_id",
         select: "name",
