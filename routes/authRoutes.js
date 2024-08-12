@@ -28,9 +28,7 @@ router
 router.route("/admin/order/").get(orderRoute.getAllOrders);
 
 // Orders User Routes
-router
-  .route("/order/:cartId")
-  .post(authController.auth, orderRoute.createCashOrder);
+router.route("/order/:cartId").post(orderRoute.createCashOrder);
 router.route("/order/").get(authController.auth, orderRoute.getAllUserOrders);
 router
   .route("/order/:orderId")

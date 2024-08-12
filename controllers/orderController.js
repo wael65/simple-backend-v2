@@ -15,7 +15,7 @@ var localStorage = new LocalStorage("./scratch");
 // create new order
 const createCashOrder = async (req, res) => {
   ////////  Get userId From localStorage   //////////
-  // let userId = localStorage.getItem("userid");
+  let userId = localStorage.getItem("userid");
   ///////////////////////////////////////////////////
   try {
     console.log(req.params.cartId);
@@ -27,8 +27,9 @@ const createCashOrder = async (req, res) => {
     // 1) Get logged user cart
     const cart = await Cart.findById(req.params.cartId);
     if (!cart) {
-      `There is no cart for this user :${req.user._id}`, 404;
+      `There is no cart for this user :${req.params.cartId}`, 404;
     }
+    // console.log(cart);
 
     // 2) Check if there is coupon apply
     const cartPrice = cart.totalPriceAfterDiscount
@@ -37,7 +38,7 @@ const createCashOrder = async (req, res) => {
 
     // 3) Create order with default cash option
     const order = await Order.create({
-      user: req.user._id,
+      user: userId,
       cartItems: cart.cartItems,
       shippingAddress: req.body.shippingAddress,
       totalOrderPrice: taxPrice + shippingPrice + cartPrice,
