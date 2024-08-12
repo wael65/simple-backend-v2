@@ -30,10 +30,11 @@ const createCashOrder = async (req, res) => {
       `There is no cart for this user :${req.params.cartId}`, 404;
     }
     // console.log(cart);
+    console.log(cart);
 
     // 2) Check if there is coupon apply
-    const cartPrice = cart.totalPriceAfterDiscount
-      ? cart.totalPriceAfterDiscount
+    const cartPrice = cart.totalAfterDiscount
+      ? cart.totalAfterDiscount
       : cart.totalCartPrice;
 
     // 3) Create order with default cash option
