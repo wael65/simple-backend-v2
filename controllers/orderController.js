@@ -22,7 +22,7 @@ const createCashOrder = async (req, res) => {
     console.log(userId);
     // app settings
     const taxPrice = 0;
-    const shippingPrice = 0;
+    const shippingPrice = 60;
 
     // 1) Get logged user cart
     const cart = await Cart.findById(req.params.cartId);
@@ -31,8 +31,8 @@ const createCashOrder = async (req, res) => {
     }
 
     // 2) Check if there is coupon apply
-    const cartPrice = cart.totalAfterDiscount
-      ? cart.totalAfterDiscount
+    const cartPrice = cart.totalPriceAfterDiscount
+      ? cart.totalPriceAfterDiscount
       : cart.totalCartPrice;
 
     // 3) Create order with default cash option
