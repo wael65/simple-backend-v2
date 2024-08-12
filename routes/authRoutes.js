@@ -24,13 +24,21 @@ router
   .route("/address/:addressId")
   .put(authController.auth, addressRoute.updateAddress);
 
-// Orders Routes
-router.route("/order/:cartId").post(orderRoute.createCashOrder);
-router.route("/order/").get(orderRoute.getAllUserOrders);
+// Orders Admin Routes
 router.route("/admin/order/").get(orderRoute.getAllOrders);
-router.route("/order/:orderID").get(orderRoute.getOneOrder);
-router.route("/order/:orderID").delete(orderRoute.deleteOrder);
-router.route("/order/pay/:id").put(orderRoute.updateOrderPay);
-router.route("/order/delevery/:id").put(orderRoute.updateOrderDelecery);
+
+// Orders User Routes
+router
+  .route("/order/:cartId")
+  .post(authController.auth, orderRoute.createCashOrder);
+router.route("/order/").get(authController.auth, orderRoute.getAllUserOrders);
+router
+  .route("/order/:orderId")
+  .get(authController.auth, orderRoute.getOneOrder);
+router
+  .route("/order/:orderId")
+  .delete(authController.auth, orderRoute.deleteOrder);
+router.route("/order/pay/:orderId").put(orderRoute.updateOrderPay);
+router.route("/order/delevery/:orderId").put(orderRoute.updateOrderDelecery);
 
 module.exports = router;
